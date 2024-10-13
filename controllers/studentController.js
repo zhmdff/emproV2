@@ -1,35 +1,35 @@
 const db = require('../config/db');
 
-exports.getStudentForm = (req, res) => {
-  const sql = 'SELECT * FROM groups';
-  db.query(sql, (err, rows) => {
-    if (err) {
-      return res.status(500).send('Error fetching data');
-    }
-    res.render('student_form', { info: rows, username: req.session.username });
-  });
-};
+// exports.getStudentForm = (req, res) => {
+//   const sql = 'SELECT * FROM group_list';
+//   db.query(sql, (err, rows) => {
+//     if (err) {
+//       return res.status(500).send('Error fetching data');
+//     }
+//     res.render('student_form', { info: rows, username: req.session.username });
+//   });
+// };
 
-exports.submitStudentForm = (req, res) => {
-  const { name, surname, username, password, email, group_name } = req.body;
-  if (!name || !surname || !username || !password || !email || !group_name) {
-    return res.status(400).send('All fields are required');
-  }
+// exports.submitStudentForm = (req, res) => {
+//   const { name, surname, username, password, email, group_name } = req.body;
+//   if (!name || !surname || !username || !password || !email || !group_name) {
+//     return res.status(400).send('All fields are required');
+//   }
 
-  bcrypt.hash(password, 10, (err, hashedPassword) => {
-    if (err) {
-      return res.status(500).send('Error hashing password');
-    }
+//   bcrypt.hash(password, 10, (err, hashedPassword) => {
+//     if (err) {
+//       return res.status(500).send('Error hashing password');
+//     }
 
-    const sql = 'INSERT INTO students (name, surname, username, password, email, group_name) VALUES (?, ?, ?, ?, ?, ?)';
-    db.query(sql, [name, surname, username, hashedPassword, email, group_name], (err, result) => {
-      if (err) {
-        return res.status(500).send('Error inserting data');
-      }
-      res.redirect('/student/table');
-    });
-  });
-};
+//     const sql = 'INSERT INTO students (name, surname, username, password, email, group_name) VALUES (?, ?, ?, ?, ?, ?)';
+//     db.query(sql, [name, surname, username, hashedPassword, email, group_name], (err, result) => {
+//       if (err) {
+//         return res.status(500).send('Error inserting data');
+//       }
+//       res.redirect('/student/table');
+//     });
+//   });
+// };
 
 exports.getStudentTable = (req, res) => {
   if (['admin', 'moderator', 'student', 'teacher'].includes(req.session.userType)) {
@@ -78,21 +78,10 @@ exports.getStudentTable = (req, res) => {
 
 
 exports.getGroupTable = (req, res) => {
-    const username = req.session.username; // Retrieve username from session
-    const globalUserType  = req.session.userType; // Retrieve username from session
+    const username = req.session.username;
+    const globalUserType  = req.session.userType;
   
-    if (globalUserType === 'admin' || globalUserType === 'moderator') {
-      // If the user is an admin or moderator, fetch all groups
-      const sql = 'SELECT * FROM groups';
-  
-      db.query(sql, (err, rows) => {
-        if (err) {
-          return res.status(500).send('Error fetching data from database');
-        }
-        res.render('group_table', { info: rows, username, req, path: req.path, globalUserType });
-      });
-  
-    } else if (globalUserType === 'student' || globalUserType === 'teacher') {
+    if (globalUserType === 'student' || globalUserType === 'teacher') {
       // If the user is a student or teacher, fetch only their group
       const usersGroup = 'SELECT group_name FROM students WHERE username = ?';
   
@@ -109,7 +98,7 @@ exports.getGroupTable = (req, res) => {
           const usGroup = rows[0].group_name; // Accessing the group_name from the first row
           console.log('User Group:', usGroup); // Log the value of usGroup for verification
   
-          const sql = 'SELECT * FROM groups WHERE group_name = ?';
+          const sql = 'SELECT * FROM group_list WHERE group_name = ?';
   
           // Execute the query to get the specific group
           db.query(sql, [usGroup], (err, groupRows) => {

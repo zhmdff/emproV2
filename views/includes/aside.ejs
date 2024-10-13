@@ -108,28 +108,29 @@
                 <% } %>
               </ul>
             </li>
-          
-            <!-- Groups -->
-            <li class="menu-item <%= path.startsWith('/group') ? 'active open' : '' %>">
-              <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-group"></i>
-                <div data-i18n="Account Settings">Groups</div>
-              </a>
-              <ul class="menu-sub">
-                <li class="menu-item <%= path === '/group/table' ? 'active' : '' %>">
-                  <a href="/group/table" class="menu-link">
-                    <div data-i18n="Account">Group List</div>
-                  </a>
-                </li>
-                <% if (globalUserType === 'admin' || globalUserType === 'moderator') { %>
-                <li class="menu-item <%= path === '/admin/group/form' ? 'active' : '' %>">
-                  <a href="/admin/group/form" class="menu-link">
-                    <div data-i18n="Notifications">Add Group</div>
-                  </a>
-                </li>
-                <% } %>
-              </ul>
-            </li>
+            <% if (globalUserType === 'admin' || globalUserType === 'moderator') { %>
+              <!-- Groups -->
+              <li class="menu-item <%= path.startsWith('/group') ? 'active open' : '' %>">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                  <i class="menu-icon tf-icons bx bx-group"></i>
+                  <div data-i18n="Account Settings">Groups</div>
+                </a>
+                <ul class="menu-sub">
+                  <li class="menu-item <%= path === '/group/table' ? 'active' : '' %>">
+                    <a href="/admin/group/table" class="menu-link">
+                      <div data-i18n="Account">Group List</div>
+                    </a>
+                  </li>
+                  
+                  <li class="menu-item <%= path === '/admin/group/form' ? 'active' : '' %>">
+                    <a href="/admin/group/form" class="menu-link">
+                      <div data-i18n="Notifications">Add Group</div>
+                    </a>
+                  </li>
+                  
+                </ul>
+              </li>
+            <% } %>
           <% } %>
 
           <% if (globalUserType === 'admin' || globalUserType === 'moderator') { %>

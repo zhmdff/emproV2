@@ -15,46 +15,35 @@
     <div class="col-xxl">
       <div class="card mb-4">
         <div class="card-body">
-          <form action="/admin/group/manage/<%= info.group_name %>" method="POST">
-            <% if (data && data.length) { %>
-                <% data.forEach((row) => { %>
+          <form action="/admin/group/manage/update/<%= tableName %>" method="POST">
 
-
-                    <div class="row mb-3">
-                      <label class="col-sm-2 col-form-label" for="lesson_faculty">Faculty</label>
-                      <div class="col-sm-10">
-                        <select name="lesson_faculty" class="form-select col-sm-8" id="lesson_faculty" aria-label="Faculty">
-                          <option value="" disabled selected>Select Faculty</option>
-                          <option value="Xətti Cəbr və analitik həndəsə" <%= row.lesson === 'Xətti Cəbr və analitik həndəsə' ? 'selected' : '' %>>Xətti Cəbr və analitik həndəsə</option>
-                          <option value="İqtisadiyyat və idarəetmə">İqtisadiyyat və idarəetmə</option>
-                        </select>
-                      </div>
-                    </div>
-
-
-
-                <% }); %>
-            <% } else { %>
-                <p>No data available.</p>
-            <% } %>
-
-            <div class="row mb-3">
-              <label class="col-sm-2 col-form-label" for="lesson_faculty">Faculty</label>
-              <div class="col-sm-10">
-                <select name="lesson_faculty" class="form-select" id="lesson_faculty" aria-label="Faculty">
-                  <option value="" disabled selected>Select Faculty</option>
-                    <option value="Biznes və menecment">Biznes və menecment</option>
-                    <option value="İqtisadiyyat və idarəetmə">İqtisadiyyat və idarəetmə</option>
-                </select>
-              </div>
-            </div>
-        
-            <div class="row mb-3">
-                <label class="col-sm-2 col-form-label" for="number">Number</label>
-                <div class="col-sm-10">
-                    <input type="text" name="number" class="form-control" id="number" placeholder="Soyad..." />
+            <% if (table && table.length) { %>
+              <% table.forEach((table_row) => { %>
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label" for="lesson_faculty">Select Lesson</label>
+                  <div class="col-sm-10">
+                    <select name="lesson_<%= table_row.id %>" class="form-select col-sm-8" id="lesson_<%= table_row.id %>" aria-label="Faculty">
+                      <option value="none" selected>Select Lesson From List</option>
+                      
+                      <% if (table_row.lesson && table_row.lesson !== '') { %>
+                        <option value="<%= table_row.lesson %>" selected><%= table_row.lesson %></option>
+                      <% } %>
+            
+                      <% if (!table_row.lesson || table_row.lesson === '') { %>
+                        <% lessons.forEach((lesson_row) => { %>
+                          <option value="<%= lesson_row.lesson_name %>"><%= lesson_row.lesson_name %></option>
+                        <% }); %>
+                      <% } %>
+                      
+                    </select>
+                  </div>
                 </div>
-            </div>
+              <% }); %>
+            <% } else { %>
+              <p>No data available.</p>
+            <% } %>
+            
+          
         
             <div class="row justify-content-end">
                 <div class="col-sm-10">

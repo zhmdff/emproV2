@@ -17,6 +17,7 @@ router.post('/admin/student/add', adminMiddleware, adminController.studentAdd);
 router.get('/admin/group/table', adminMiddleware, adminController.groupTable);
 router.get('/admin/group/info/:group_number', adminMiddleware, adminController.groupInfo);
 router.get('/admin/group/manage/:group_number', adminMiddleware, adminController.groupManage);
+router.post('/admin/group/manage/update/:group_number', adminMiddleware, adminController.groupManageUpdate);
 router.get('/admin/group/form', adminMiddleware, adminController.groupForm);
 router.post('/admin/group/add', adminMiddleware, adminController.groupAdd);
 

@@ -1,7 +1,7 @@
 const db = require('../config/db');
 
 exports.getGroupTable = (req, res) => {
-    const sql = 'SELECT * FROM groups';
+    const sql = 'SELECT * FROM group_list';
     db.query(sql, (err, rows) => {
       if (err) {
         return res.status(500).send('Error fetching data');

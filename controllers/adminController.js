@@ -38,24 +38,22 @@ exports.studentForm = (req, res) => {
 };
 
 exports.studentAdd = (req, res) => {
-    
-    const { name, surname, username, password, email, phone_number, address, group_name, birthdate, course,education_type } = req.body;
-    console.log(birthdate)
+    const { name, surname, dad_name, username, password, email, phone_number, address, group_name, birthdate, course, education_type } = req.body;
+    console.log(birthdate);
   
-    if (!name || !surname || !username || !password || !email || !phone_number || !address || !group_name || !birthdate || !course || !education_type) {
+    if (!name || !surname || !dad_name || !username || !password || !email || !phone_number || !address || !group_name || !birthdate || !course || !education_type) {
         console.log(req.body);
-        return res.status(400).send('All fields are required 2');
+        return res.status(400).send('All fields are required');
     }
   
     function formatDate(birthdate) {
-      const dateObj = new Date(birthdate);
-      const year = dateObj.getFullYear();
-      const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-      const day = String(dateObj.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
+        const dateObj = new Date(birthdate);
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
   
-    // Convert birthdate to YYYY-MM-DD format
     const formattedBirthdate = formatDate(birthdate);
   
     bcrypt.hash(password, 10, (err, hashedPassword) => {
@@ -63,18 +61,31 @@ exports.studentAdd = (req, res) => {
             return res.status(500).send('Error hashing password');
         }
   
-        const sql = 'INSERT INTO students (name, surname, username, password, email, phone_number, address_line, group_name, birthdate, course, education_type, userType) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "student")';
-        db.query(sql, [name, surname, username, hashedPassword, email, phone_number, address, group_name, formattedBirthdate, course, education_type], (err, result) => {
+        const sql = 'INSERT INTO students (name, surname, dad_name, username, password, email, phone_number, address_line, group_name, birthdate, course, education_type, userType) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "student")';
+        
+        db.query(sql, [name, surname, dad_name, username, hashedPassword, email, phone_number, address, group_name, formattedBirthdate, course, education_type], (err, result) => {
             if (err) {
-              console.log(err)
+                console.log(err);
                 return res.status(500).send('Error inserting form data into database');
             }
-            console.log('Form data inserted into database');
-            res.redirect('/student/table');
+
+            const studentId = result.insertId; // Get the inserted student ID
+
+            // Now insert the same data into the users table
+            const userSql = 'INSERT INTO users (id, username, password, userType) VALUES (?, ?, ?, ?)';
+            db.query(userSql, [studentId, username, hashedPassword, 'student'], (err, result) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).send('Error inserting data into users table');
+                }
+
+                console.log('Data inserted into students and users tables');
+                res.redirect('/table');
+            });
         });
     });
-
 };
+
 
 exports.groupTable = (req, res) => {
 

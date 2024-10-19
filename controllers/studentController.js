@@ -26,7 +26,7 @@ const db = require('../config/db');
 //       if (err) {
 //         return res.status(500).send('Error inserting data');
 //       }
-//       res.redirect('/student/table');
+//       res.redirect('/table');
 //     });
 //   });
 // };
@@ -75,6 +75,45 @@ exports.getStudentTable = (req, res) => {
     res.status(403).send('Access forbidden');
   }
 };
+
+exports.getLessonTable = (req, res) => {
+  const username = req.session.username;  // Get the username from the session
+  
+  // Query to get the group name of the student based on their username
+  const getGroupOfStudentSQL = 'SELECT group_name FROM students WHERE username = ?';
+
+  // Query to get the group name first
+  db.query(getGroupOfStudentSQL, [username], (err, result) => {
+      if (err) {
+          console.error('Database error:', err);  // Log error for debugging
+          return res.status(500).send('Error fetching group from database');
+      }
+
+      const groupName = result[0].group_name;  // Assuming the group name is in the first result
+
+      // Now concatenate the prefix 'group_' with the group name
+      const tableName = `group_${groupName}`;
+
+      // Use the dynamic table name and wrap it in backticks
+      db.query(`SELECT lesson FROM \`${tableName}\``, (err, rows) => {
+          if (err) {
+              console.error('Database error:', err);  // Log error for debugging
+              return res.status(500).send('Error fetching lessons from database');
+          }
+
+          // Render the template with data
+          res.render('student_lesson_list', { 
+              info: rows,  // Pass the fetched lesson data
+              username,  // Pass the session username
+              req,  // Pass the request object
+              path: req.path,  // Pass the current path
+              globalUserType: req.session.userType,  // Pass userType from session
+          });
+      });
+  });
+};
+
+
 
 
 exports.getGroupTable = (req, res) => {

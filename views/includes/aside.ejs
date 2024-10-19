@@ -94,8 +94,8 @@
                 <div data-i18n="Account Settings">Students</div>
               </a>
               <ul class="menu-sub">
-                <li class="menu-item <%= path === '/student/table' ? 'active' : '' %>">
-                  <a href="/student/table" class="menu-link">
+                <li class="menu-item <%= path === '/table' ? 'active' : '' %>">
+                  <a href="/table" class="menu-link">
                     <div data-i18n="Account">Student List</div>
                   </a>
                 </li>
@@ -133,7 +133,7 @@
             <% } %>
           <% } %>
 
-          <% if (globalUserType === 'admin' || globalUserType === 'moderator') { %>
+          
             <!-- Lessons -->
             <li class="menu-item <%= path.startsWith('/lesson') ? 'active open' : '' %>">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -141,6 +141,7 @@
                 <div data-i18n="Account Settings">Lessons</div>
               </a>
               <ul class="menu-sub">
+                <% if (globalUserType === 'admin' || globalUserType === 'moderator') { %>
                 <li class="menu-item <%= path === '/admin/lesson/table' ? 'active' : '' %>">
                   <a href="/admin/lesson/table" class="menu-link">
                     <div data-i18n="Account">Lesson List</div>
@@ -152,10 +153,18 @@
                     <div data-i18n="Notifications">Add Lesson</div>
                   </a>
                 </li>
-                
+                <% } %>
+
+                <% if (globalUserType === 'student') { %>
+                <li class="menu-item <%= path === '/lessons/table' ? 'active' : '' %>">
+                  <a href="/lessons/table" class="menu-link">
+                    <div data-i18n="Account">My Lessons</div>
+                  </a>
+                </li>
+                <% } %>
               </ul>
             </li>
-          <% } %>
+          
         </ul>
       </aside>
       <!-- / Menu -->
